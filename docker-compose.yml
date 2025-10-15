@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:15
+    container_name: pinkcloset-db
+    env_file:
+      - ./.env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    networks:
+      - pinkcloset-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pinkcloset-api
+    env_file:
+      - ./.env
+    ports:
+      - "${SERVER_PORT}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+    networks:
+      - pinkcloset-network
+
+  adminer:
+    image: adminer
+    container_name: pinkcloset-adminer
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "${ADMINER_PORT}:8080"
+    networks:
+      - pinkcloset-network
+
+networks:
+  pinkcloset-network:
+    driver: bridge
