@@ -26,4 +26,7 @@ public class Cart {
     // Itens do carrinho
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> items = new ArrayList<>();
+
+    private boolean active = true;
+
 }

@@ -29,6 +29,8 @@ public class Address {
     @NotBlank
     private String state;
 
+    private boolean primaryAddress;
+
     @NotBlank
     private String zipCode;
 
