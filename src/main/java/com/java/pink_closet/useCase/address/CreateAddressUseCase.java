@@ -5,8 +5,10 @@ import com.java.pink_closet.dto.address.response.AddressDetailedResponse;
 import com.java.pink_closet.execeptions.customer.CustomerNotFoundException;
 import com.java.pink_closet.mapper.AddressMapper;
 import com.java.pink_closet.model.Address;
+import com.java.pink_closet.model.Customer;
 import com.java.pink_closet.repositories.AddressRepository;
-import com.java.pink_closet.repositories.CustomerRespository;
+import com.java.pink_closet.repositories.CustomerRepository;
+import com.java.pink_closet.utils.dto.ViaCepResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,19 @@ import org.springframework.stereotype.Service;
 public class CreateAddressUseCase {
 
     private final AddressRepository addressRepository;
-    private final CustomerRespository customerRespository;
+    private final CustomerRepository customerRepository;
     private final AddressMapper addressMapper;
+    private final ValidateAddressUseCase validateAddressUseCase; // injetado
 
     public AddressDetailedResponse execute(AddressCreateRequest request) {
-        customerRespository.findById(request.getCustomerId())
+        Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(request.getCustomerId()));
+
+        ViaCepResponse enderecoViaCep = validateAddressUseCase.execute(request.getZipCode());
+        if (enderecoViaCep.getLogradouro() != null) request.setStreet(enderecoViaCep.getLogradouro());
+        if (enderecoViaCep.getBairro() != null) request.setNeighborhood(enderecoViaCep.getBairro());
+        if (enderecoViaCep.getLocalidade() != null) request.setCity(enderecoViaCep.getLocalidade());
+        if (enderecoViaCep.getUf() != null) request.setState(enderecoViaCep.getUf());
 
         Address address = addressMapper.toEntity(request);
 

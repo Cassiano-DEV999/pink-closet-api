@@ -1,0 +1,49 @@
+package com.java.pink_closet.config;
+
+import com.java.pink_closet.model.Customer;
+import com.java.pink_closet.model.Manager;
+import com.java.pink_closet.model.ManagerRole;
+import com.java.pink_closet.repositories.CustomerRepository;
+import com.java.pink_closet.repositories.ManagerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+@RequiredArgsConstructor
+public class DataInitializer implements CommandLineRunner {
+
+    private final CustomerRepository customerRepository;
+    private final ManagerRepository managerRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public void run(String... args) throws Exception {
+
+        // Criar Manager de teste
+        if (managerRepository.findByEmail("admin@pinkcloset.com").isEmpty()) {
+            Manager manager = Manager.builder()
+                    .name("Admin PinkCloset")
+                    .email("admin@pinkcloset.com")
+                    .password(passwordEncoder.encode("admin123"))
+                    .role(ManagerRole.ADMIN)
+                    .active(true)
+                    .build();
+            managerRepository.save(manager);
+            System.out.println("Manager de teste criado: admin@pinkcloset.com / admin123");
+        }
+
+        // Criar Customer de teste
+        if (customerRepository.findByEmail("cliente@pinkcloset.com").isEmpty()) {
+            Customer customer = Customer.builder()
+                    .name("Cliente Teste")
+                    .email("cliente@pinkcloset.com")
+                    .password(passwordEncoder.encode("cliente123"))
+                    .active(true)
+                    .build();
+            customerRepository.save(customer);
+            System.out.println("Customer de teste criado: cliente@pinkcloset.com / cliente123");
+        }
+    }
+}

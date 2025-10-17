@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class CartItem {
     @Positive
     private Integer quantity;
 
-    private Double subtotal;
+    private BigDecimal subtotal;
 
     // Relacionamentos
     @ManyToOne

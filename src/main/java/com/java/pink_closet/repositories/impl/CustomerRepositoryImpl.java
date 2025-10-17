@@ -1,7 +1,7 @@
 package com.java.pink_closet.repositories.impl;
 
 import com.java.pink_closet.model.Customer;
-import com.java.pink_closet.repositories.CustomerRespository;
+import com.java.pink_closet.repositories.CustomerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 @Transactional
-public class CustomerRepositoryImpl implements CustomerRespository {
+public class CustomerRepositoryImpl implements CustomerRepository {
 
     private final EntityManager em;
 
@@ -29,8 +29,8 @@ public class CustomerRepositoryImpl implements CustomerRespository {
     }
 
     @Override
-    public Customer findById(Long id) {
-        return em.find(Customer.class, id);
+    public Optional<Customer> findById(Long id) {
+        return Optional.ofNullable(em.find(Customer.class, id));
     }
 
     @Override

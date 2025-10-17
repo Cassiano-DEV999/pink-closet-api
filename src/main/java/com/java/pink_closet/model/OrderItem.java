@@ -3,6 +3,7 @@ package com.java.pink_closet.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -21,10 +22,13 @@ public class OrderItem {
     private Integer quantity;
 
     @Positive
-    private Double unitPrice;
+    private BigDecimal unitPrice;
 
     @Positive
-    private Double subtotal;
+    private BigDecimal subtotal;
+
+    @Enumerated(EnumType.STRING)
+    private OrderItemStatus status = OrderItemStatus.PENDING;
 
     // Relacionamentos
     @ManyToOne
@@ -34,4 +38,10 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public void calculateSubtotal() {
+        if (unitPrice != null && quantity != null) {
+            this.subtotal = unitPrice.multiply(new BigDecimal(quantity));
+        }
+    }
 }

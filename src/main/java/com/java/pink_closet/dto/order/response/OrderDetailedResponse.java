@@ -1,8 +1,10 @@
 package com.java.pink_closet.dto.order.response;
 
+import com.java.pink_closet.dto.orderItem.response.OrderItemResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class OrderDetailedResponse {

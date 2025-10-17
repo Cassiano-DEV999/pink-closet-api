@@ -41,6 +41,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return findById(id).isPresent();
+    }
+
+    @Override
     public List<Category> findAll() {
         return em.createQuery("SELECT c FROM Category c", Category.class)
                 .getResultList();

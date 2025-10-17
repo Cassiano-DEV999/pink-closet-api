@@ -3,6 +3,8 @@ package com.java.pink_closet.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +21,7 @@ public class Payment {
     private Long id;
 
     @Positive
-    private Double amount;
+    private BigDecimal amount;
 
     private String method;
 

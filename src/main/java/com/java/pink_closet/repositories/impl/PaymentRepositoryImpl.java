@@ -40,6 +40,11 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         if (payment != null) em.remove(payment);
     }
 
+    @Override
+    public List<Payment> findAll() {
+        return List.of();
+    }
+
 
     @Override
     public List<Payment> findByOrderId(Long orderId) {

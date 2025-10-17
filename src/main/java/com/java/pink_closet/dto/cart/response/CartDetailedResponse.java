@@ -1,5 +1,6 @@
 package com.java.pink_closet.dto.cart.response;
 
+import com.java.pink_closet.dto.cartItem.response.CartItemResponse;
 import lombok.Data;
 import java.util.List;
 

@@ -40,6 +40,11 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
     }
 
     @Override
+    public List<OrderItem> findAll() {
+        return List.of();
+    }
+
+    @Override
     public List<OrderItem> findByOrderId(Long orderId) {
         TypedQuery<OrderItem> query = em.createQuery(
                 "SELECT oi FROM OrderItem oi WHERE oi.order.id = :orderId", OrderItem.class);

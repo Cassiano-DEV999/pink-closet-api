@@ -6,6 +6,7 @@ import com.java.pink_closet.execeptions.address.AddressNotFoundException;
 import com.java.pink_closet.mapper.AddressMapper;
 import com.java.pink_closet.model.Address;
 import com.java.pink_closet.repositories.AddressRepository;
+import com.java.pink_closet.utils.dto.ViaCepResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,19 @@ public class UpdateAddressUseCase {
 
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
+    private final ValidateAddressUseCase validateAddressUseCase; // injetado
 
     public AddressDetailedResponse execute(Long id, AddressUpdateRequest request) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new AddressNotFoundException(id));
+
+        if (request.getZipCode() != null) {
+            ViaCepResponse enderecoViaCep = validateAddressUseCase.execute(request.getZipCode());
+            if (enderecoViaCep.getLogradouro() != null) request.setStreet(enderecoViaCep.getLogradouro());
+            if (enderecoViaCep.getBairro() != null) request.setNeighborhood(enderecoViaCep.getBairro());
+            if (enderecoViaCep.getLocalidade() != null) request.setCity(enderecoViaCep.getLocalidade());
+            if (enderecoViaCep.getUf() != null) request.setState(enderecoViaCep.getUf());
+        }
 
         if (request.getStreet() != null) address.setStreet(request.getStreet());
         if (request.getNumber() != null) address.setNumber(request.getNumber());

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,9 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     public CartItem save(CartItem cartItem) {
         // Calcula subtotal automaticamente
         if (cartItem.getProduct() != null && cartItem.getQuantity() != null) {
-            cartItem.setSubtotal(cartItem.getQuantity() * cartItem.getProduct().getPrice());
+            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
+            BigDecimal subtotal = quantity.multiply(cartItem.getProduct().getPrice());
+            cartItem.setSubtotal(subtotal);
         }
 
         if (cartItem.getId() == null) {

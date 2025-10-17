@@ -14,4 +14,5 @@ public interface CategoryRepository {
     List<Category> findAll();
     List<Category> findAllActive(); // nova lista apenas ativas
     void deleteById(Long id);
+    boolean existsById(Long id);
 }
