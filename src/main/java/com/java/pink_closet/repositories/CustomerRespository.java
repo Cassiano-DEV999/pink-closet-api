@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface CustomerRespository {
     Customer save(Customer customer);
-    Customer findById(Long id);
+    Optional<Customer> findById(Long id);
     Optional<Customer> findByEmail(String email);
     void deleteById(Long id);
     List<Customer> findAll();
