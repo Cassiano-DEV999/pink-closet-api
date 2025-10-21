@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 public class JwtProvider {
@@ -21,10 +22,14 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String userId, String type) {
+    public String generateToken(String userId, String type, String name, String email) {
         return Jwts.builder()
                 .setSubject(userId)
-                .claim("type", type)
+                .addClaims(Map.of(
+                        "type", type,
+                        "name", name,
+                        "email", email
+                ))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -40,17 +45,27 @@ public class JwtProvider {
         }
     }
 
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String getUserId(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSigningKey())
-                .build().parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return getClaims(token).getSubject();
     }
 
     public String getUserType(String token) {
-        return (String) Jwts.parserBuilder().setSigningKey(getSigningKey())
-                .build().parseClaimsJws(token)
-                .getBody()
-                .get("type");
+        return getClaims(token).get("type", String.class);
+    }
+
+    public String getUserName(String token) {
+        return getClaims(token).get("name", String.class);
+    }
+
+    public String getUserEmail(String token) {
+        return getClaims(token).get("email", String.class);
     }
 }

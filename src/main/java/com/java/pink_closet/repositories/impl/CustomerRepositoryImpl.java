@@ -75,4 +75,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 "SELECT c FROM Customer c WHERE c.active = true", Customer.class);
         return query.getResultList();
     }
+
+    @Override
+    public Optional<Customer> findByEmailIgnoreCase(String email) {
+        TypedQuery<Customer> query = em.createQuery(
+                "SELECT c FROM Customer c WHERE LOWER(c.email) = LOWER(:email)", Customer.class);
+        query.setParameter("email", email);
+        return query.getResultStream().findFirst();
+    }
+
 }

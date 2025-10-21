@@ -83,4 +83,12 @@ public class ManagerRepositoryImpl implements ManagerRepository {
                 "SELECT m FROM Manager m WHERE m.active = true", Manager.class);
         return query.getResultList();
     }
+
+    @Override
+    public Optional<Manager> findByEmailIgnoreCase(String email) {
+        TypedQuery<Manager> query = em.createQuery(
+                "SELECT m FROM Manager m WHERE LOWER(m.email) = LOWER(:email)", Manager.class);
+        query.setParameter("email", email);
+        return query.getResultStream().findFirst();
+    }
 }

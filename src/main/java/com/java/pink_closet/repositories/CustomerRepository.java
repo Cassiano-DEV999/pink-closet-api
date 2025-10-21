@@ -13,5 +13,6 @@ public interface CustomerRepository {
     List<Customer> findByActive(boolean active);
     Optional<Customer> findActiveById(Long id);
     List<Customer> findAllActive();
+    Optional<Customer> findByEmailIgnoreCase(String email);
 
 }

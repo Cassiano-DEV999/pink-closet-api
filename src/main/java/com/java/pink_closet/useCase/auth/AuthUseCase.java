@@ -18,7 +18,7 @@ public class AuthUseCase {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public AuthLoginResponse login(AuthLoginRequest request) {
+    public AuthLoginResponse login(AuthLoginRequest request, String userType) {
         var userDetails = (AppUserDetails) userDetailsService.loadUserByUsername(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
@@ -27,7 +27,9 @@ public class AuthUseCase {
 
         String token = jwtProvider.generateToken(
                 userDetails.getId().toString(),
-                userDetails.getType()
+                userDetails.getType(),
+                userDetails.getName(),
+                userDetails.getEmail()
         );
 
         return new AuthLoginResponse(token);

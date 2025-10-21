@@ -17,4 +17,5 @@ public interface ManagerRepository {
     List<Manager> findByActive(boolean active);
     Optional<Manager> findActiveById(Long id);
     List<Manager> findAllActive();
+    Optional<Manager> findByEmailIgnoreCase(String email);
 }

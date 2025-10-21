@@ -22,28 +22,44 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // Criar Manager de teste
-        if (managerRepository.findByEmail("admin@pinkcloset.com").isEmpty()) {
-            Manager manager = Manager.builder()
-                    .name("Admin PinkCloset")
-                    .email("admin@pinkcloset.com")
-                    .password(passwordEncoder.encode("admin123"))
-                    .role(ManagerRole.ADMIN)
-                    .active(true)
-                    .build();
-            managerRepository.save(manager);
-            System.out.println("Manager de teste criado: admin@pinkcloset.com / admin123");
-        }
+        managerRepository.findByEmailIgnoreCase("admin@pinkcloset.com")
+                .ifPresentOrElse(
+                        existing -> System.out.println("Manager já existe: " + existing.getEmail()),
+                        () -> {
+                            Manager manager = Manager.builder()
+                                    .name("Admin PC")
+                                    .email("adminpc@pinkcloset.com")
+                                    .password(passwordEncoder.encode("admin123"))
+                                    .role(ManagerRole.ADMIN)
+                                    .active(true)
+                                    .build();
+                            try {
+                                managerRepository.save(manager);
+                                System.out.println("✅ Manager de teste criado: admin@pinkcloset.com / admin123");
+                            } catch (Exception e) {
+                                System.out.println("⚠️ Erro ao criar Manager: " + e.getMessage());
+                            }
+                        }
+                );
 
         // Criar Customer de teste
-        if (customerRepository.findByEmail("cliente@pinkcloset.com").isEmpty()) {
-            Customer customer = Customer.builder()
-                    .name("Cliente Teste")
-                    .email("cliente@pinkcloset.com")
-                    .password(passwordEncoder.encode("cliente123"))
-                    .active(true)
-                    .build();
-            customerRepository.save(customer);
-            System.out.println("Customer de teste criado: cliente@pinkcloset.com / cliente123");
-        }
+        customerRepository.findByEmailIgnoreCase("cliente@pinkcloset.com")
+                .ifPresentOrElse(
+                        existing -> System.out.println("Customer já existe: " + existing.getEmail()),
+                        () -> {
+                            Customer customer = Customer.builder()
+                                    .name("Cliente Teste")
+                                    .email("cliente@pinkcloset.com")
+                                    .password(passwordEncoder.encode("cliente123"))
+                                    .active(true)
+                                    .build();
+                            try {
+                                customerRepository.save(customer);
+                                System.out.println("✅ Customer de teste criado: cliente@pinkcloset.com / cliente123");
+                            } catch (Exception e) {
+                                System.out.println("⚠️ Erro ao criar Customer: " + e.getMessage());
+                            }
+                        }
+                );
     }
 }
